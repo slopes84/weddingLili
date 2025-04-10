@@ -1,2 +1,84 @@
-<!-- Section HTML template -->
-<!-- Content provided anteriormente -->
+{% extends 'base.html' %}
+
+{% block title %}{{ section.name }} - O Casamento da Lígia e do Paulo{% endblock %}
+
+{% block content %}
+<section class="section-header">
+    <h2>{{ section.name }}</h2>
+    <p>{{ section.description }}</p>
+</section>
+
+<section class="upload-section">
+    {% if current_user.is_authenticated %}
+    <div class="upload-tabs">
+        <div class="tab active" data-tab="photo-upload">Carregar Foto</div>
+        <div class="tab" data-tab="video-upload">Carregar Vídeo</div>
+    </div>
+    
+    <div class="upload-forms">
+        <div class="tab-content active" id="photo-upload">
+            <form action="{{ url_for('upload_photo', section_slug=section.slug) }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="photo">Selecione uma foto:</label>
+                    <input type="file" name="photo" id="photo" accept=".jpg,.jpeg,.png,.gif,.webp" required>
+                    <p class="form-help">Formatos permitidos: JPG, JPEG, PNG, GIF, WEBP</p>
+                </div>
+                <button type="submit" class="btn">Enviar Foto</button>
+            </form>
+        </div>
+        
+        <div class="tab-content" id="video-upload">
+            <form action="{{ url_for('upload_video', section_slug=section.slug) }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="video">Selecione um vídeo:</label>
+                    <input type="file" name="video" id="video" accept=".mp4,.mov,.avi,.mkv,.webm" required>
+                    <p class="form-help">Formatos permitidos: MP4, MOV, AVI, MKV, WEBM</p>
+                </div>
+                <button type="submit" class="btn">Enviar Vídeo</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <p>Faça <a href="{{ url_for('login') }}">login</a> para carregar suas fotos e vídeos.</p>
+    {% endif %}
+</section>
+
+<section class="gallery">
+    <h2>Fotos</h2>
+    {% if photos %}
+    <div class="photo-gallery">
+        {% for photo in photos %}
+        <div class="gallery-item">
+            <img src="{{ url_for('static', filename='uploads/photos/' + section.slug + '/' + photo.filename) }}" alt="Foto">
+            <div class="gallery-item-info">
+                <p>Por: {{ photo.uploader.username }}</p>
+                <p>Data: {{ photo.upload_date.strftime('%d/%m/%Y') }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Nenhuma foto enviada ainda nesta seção.</p>
+    {% endif %}
+    
+    <h2>Vídeos</h2>
+    {% if videos %}
+    <div class="video-gallery">
+        {% for video in videos %}
+        <div class="gallery-item">
+            <video controls>
+                <source src="{{ url_for('static', filename='uploads/videos/' + section.slug + '/' + video.filename) }}" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+            <div class="gallery-item-info">
+                <p>Por: {{ video.uploader.username }}</p>
+                <p>Data: {{ video.upload_date.strftime('%d/%m/%Y') }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Nenhum vídeo enviado ainda nesta seção.</p>
+    {% endif %}
+</section>
+{% endblock %}

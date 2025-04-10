@@ -1,2 +1,95 @@
-<!-- Admin HTML template -->
-<!-- Content provided anteriormente -->
+{% extends 'base.html' %}
+
+{% block title %}Administração - O Casamento da Lígia e do Paulo{% endblock %}
+
+{% block content %}
+<section class="admin-header">
+    <h2>Painel de Administração</h2>
+    <p>Bem-vindo(a) ao painel de administração do site de casamento</p>
+</section>
+
+<section class="admin-section">
+    <h2>Dedicatórias</h2>
+    
+    {% if dedications %}
+    <div class="dedications-list">
+        {% for dedication in dedications %}
+        <div class="dedication-card">
+            <div class="dedication-content">{{ dedication.content }}</div>
+            <div class="dedication-info">
+                <p>Por: {{ dedication.author.username }}</p>
+                <p>Data: {{ dedication.creation_date.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Nenhuma dedicatória enviada ainda.</p>
+    {% endif %}
+</section>
+
+<section class="admin-section">
+    <h2>Fotos</h2>
+    <div class="admin-gallery">
+        {% for photo in photos %}
+        <div class="admin-gallery-item">
+            <img src="{{ url_for('static', filename='uploads/photos/' + photo.section.slug + '/' + photo.filename) }}" alt="Foto">
+            <div class="admin-gallery-info">
+                <p>Seção: {{ photo.section.name }}</p>
+                <p>Por: {{ photo.uploader.username }}</p>
+                <p>Data: {{ photo.upload_date.strftime('%d/%m/%Y') }}</p>
+                <a href="{{ url_for('download_file', type='photo', filename=photo.filename) }}" class="btn small">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="admin-section">
+    <h2>Vídeos</h2>
+    <div class="admin-gallery">
+        {% for video in videos %}
+        <div class="admin-gallery-item">
+            <video controls>
+                <source src="{{ url_for('static', filename='uploads/videos/' + video.section.slug + '/' + video.filename) }}" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+            <div class="admin-gallery-info">
+                <p>Seção: {{ video.section.name }}</p>
+                <p>Por: {{ video.uploader.username }}</p>
+                <p>Data: {{ video.upload_date.strftime('%d/%m/%Y') }}</p>
+                <a href="{{ url_for('download_file', type='video', filename=video.filename) }}" class="btn small">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="admin-section">
+    <h2>Usuários</h2>
+    <div class="users-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Fotos</th>
+                    <th>Vídeos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{% if user.is_admin %}Sim{% else %}Não{% endif %}</td>
+                    <td>{{ user.photos|length }}</td>
+                    <td>{{ user.videos|length }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

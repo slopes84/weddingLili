@@ -1,2 +1,67 @@
-<!-- Base HTML template -->
-<!-- Content provided anteriormente -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}O Casamento da Lígia e do Paulo{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {{ theme.primary_color }};
+            --secondary-color: {{ theme.secondary_color }};
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="site-title">O Casamento da Lígia e do Paulo</h1>
+            <p class="wedding-date">17 de Maio de 2025</p>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Início</a></li>
+                    {% for section in get_sections() %}
+                    <li><a href="{{ url_for('section', slug=section.slug) }}">{{ section.name }}</a></li>
+                    {% endfor %}
+                    
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('admin') }}">Administração</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Entrar</a></li>
+                        <li><a href="{{ url_for('register') }}">Registrar</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 - O Casamento da Lígia e do Paulo</p>
+        </div>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,2 +1,50 @@
-<!-- Index HTML template -->
-<!-- Content provided anteriormente -->
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h2>Lígia & Paulo</h2>
+        <p>Convidamos você a celebrar nosso amor no dia 17 de maio de 2025</p>
+        <div class="countdown" id="countdown" data-wedding-date="{{ wedding_date.isoformat() }}"></div>
+    </div>
+</section>
+
+<section class="about-couple">
+    <h2>Nosso Casamento</h2>
+    <p>Estamos muito felizes em compartilhar esse momento especial com você!</p>
+    <div class="couple-photos">
+        <img src="{{ url_for('static', filename='img/couple1.jpg') }}" alt="Lígia e Paulo">
+    </div>
+</section>
+
+<section class="sections-preview">
+    <h2>Compartilhe Suas Fotografias</h2>
+    <p>Ajude-nos a guardar memórias deste dia especial carregando suas fotos e vídeos</p>
+    
+    <div class="sections-grid">
+        {% for section in get_sections() %}
+        <div class="section-card">
+            <h3>{{ section.name }}</h3>
+            <p>{{ section.description }}</p>
+            <a href="{{ url_for('section', slug=section.slug) }}" class="btn">Ver Galeria</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="dedication-form">
+    <h2>Deixe uma Dedicatória</h2>
+    
+    {% if current_user.is_authenticated %}
+    <form action="{{ url_for('add_dedication') }}" method="post">
+        <div class="form-group">
+            <label for="dedication">Sua mensagem para os noivos:</label>
+            <textarea name="content" id="dedication" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn">Enviar Dedicatória</button>
+    </form>
+    {% else %}
+    <p>Faça <a href="{{ url_for('login') }}">login</a> para deixar sua dedicatória para os noivos.</p>
+    {% endif %}
+</section>
+{% endblock %}
