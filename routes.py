@@ -1,2 +1,2 @@
-# Main application file
+# Routes file
 # Content provided anteriormente

@@ -1,2 +1,2 @@
-# Main application file
+# Models file
 # Content provided anteriormente

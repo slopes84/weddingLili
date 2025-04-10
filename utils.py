@@ -1,2 +1,2 @@
-# Main application file
+# Utility functions
 # Content provided anteriormente

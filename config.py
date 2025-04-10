@@ -1,2 +1,2 @@
-# Main application file
+# Configuration file
 # Content provided anteriormente
