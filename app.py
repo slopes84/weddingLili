@@ -20,17 +20,12 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Importar rotas após configuração inicial para evitar importações circulares
-from routes import *
+# Importar rotas e modelos
 from models import User, Section, Photo, Video, Dedication
-
-# Criar banco de dados e inicializar, caso necessário
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    initialize_db()
+import routes
 
 def initialize_db():
+    """Inicializa o banco de dados com dados padrão se necessário"""
     # Verificar se já existem seções
     if Section.query.count() == 0:
         sections = [
@@ -80,6 +75,11 @@ def initialize_db():
         )
         db.session.add(admin)
         db.session.commit()
+
+# Inicializar o banco de dados dentro do contexto da aplicação
+with app.app_context():
+    db.create_all()
+    initialize_db()
 
 if __name__ == '__main__':
     app.run(debug=True)
